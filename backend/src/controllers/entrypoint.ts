@@ -28,6 +28,13 @@ export class EntrypointController {
     res.json({ version: pgk.version });
   }
 
+  @Post('/test-audio')
+  async testEndpoint(@Response() res: express.Response) {
+    res.sendFile('src/assets/silent_1-second.wav', {
+      root: require.main!.path
+    });
+  }
+
   @Post('/extract-audio', [UploadVideo])
   async extractAudio(
     @Request('file') file: MulterFile,
