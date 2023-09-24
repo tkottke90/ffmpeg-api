@@ -14,14 +14,15 @@ FROM node:18
 
 WORKDIR /usr/app/
 
-COPY --from=build_stage /usr/build/dist /usr/app/dist
-COPY package*.json ./
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install ffmpeg -y
 
-COPY ./server .
+COPY --from=build_stage /usr/build/dist /usr/app
+COPY package*.json ./
 
 RUN npm ci
 
-CMD [ "node", "server/index.js"]
+CMD [ "node", "index.js"]
 
 ENV PORT 3000
 ENV NODE_ENV production
