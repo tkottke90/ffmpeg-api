@@ -7,18 +7,9 @@ if [ ! command jq ]; then
   apt-get install jq
 fi
 
-# UI_IMAGE=""ghcr.io/tkottke90/ffmpeg-ui:v$(node ./frontend/bin/getVersion.cjs)""
-
 # Backend
 cd backend
-
-API_VERSION=$(npm version minior)
-
-git tag -a $API_VERSION
-
-git push --follow-tags
-
-API_IMAGE="ghcr.io/tkottke90/ffmpeg-api:$API_VERSION"
+API_IMAGE="ghcr.io/tkottke90/ffmpeg-api:$GITHUB_REF_NAME"
 
 docker build \
   -t $API_IMAGE \
