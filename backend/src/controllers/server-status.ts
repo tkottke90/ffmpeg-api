@@ -5,7 +5,6 @@ import {
   Response,
   Request,
   Post,
-  Params,
   Query
 } from '@decorators/express';
 import express from 'express';
@@ -15,7 +14,6 @@ import { FfmpegService } from '../services/ffmpeg.service';
 import { MulterFile, UploadVideo } from '../middleware/multer.middleware';
 import { BadRequestError } from '../utilities/errors.util';
 import { FileSystemService } from '../services/fileSystem.service';
-import { resolve } from 'path';
 
 @Controller('/')
 export class ServerStatusController {
@@ -27,19 +25,6 @@ export class ServerStatusController {
   @Get('/')
   getRoot(@Response() res: express.Response) {
     res.json({ version: pgk.version });
-  }
-
-  @Get('/file/:filename')
-  async getFile(
-    @Params('filename') filename: string,
-    @Response() res: express.Response,
-    @Next() next: express.NextFunction
-  ) {
-    try {
-      res.sendFile(filename, { root: resolve(__dirname) });
-    } catch (error) {
-      next(error);
-    }
   }
 
   @Post('/extract-audio', [UploadVideo])
