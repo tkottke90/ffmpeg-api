@@ -31,4 +31,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
-        run: env
+        run: ./deploy.sh
