@@ -1,8 +1,9 @@
 name: Create and publish docker image
 
 on:
-  release:
-    type: [published]
+  push:
+    tags:
+      # - v1.**
 
 env:
   REGISTRY: ghcr.io
@@ -30,4 +31,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
-        run: ./deploy.sh
+        run: env
