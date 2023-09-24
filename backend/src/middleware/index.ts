@@ -1,6 +1,2 @@
+import './route-error.middleware';
 export { HttpEventMiddleware } from './http-event.middleware';
-export {
-  ErrorLogger,
-  ErrorResponder,
-  SafeErrorHandler
-} from './route-error.middleware';

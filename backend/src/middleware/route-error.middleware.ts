@@ -1,37 +1,27 @@
-import { NextFunction, Request, Response } from 'express';
-import { LoggerService } from '../services';
+/* eslint-disable prettier/prettier */
+import { Request, Response } from 'express';
+import { ErrorMiddleware, ERROR_MIDDLEWARE } from '@decorators/express';
+import { Injectable, Container } from '@decorators/di';
+import LoggerService from '../services/logger.service';
+import { HTTPError } from '../utilities/errors.util';
 
-export function ErrorLogger(
-  error: Error,
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
-  LoggerService.error(error);
+@Injectable()
+class ServerErrorMiddleware implements ErrorMiddleware {
+  public use(error: Error, request: Request, response: Response) {
+    LoggerService.error(error);
 
-  next(error);
-}
-
-export function ErrorResponder(
-  error: Record<string, any>,
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
-  if (error.type === 'redirect') {
-    return response.redirect('/error');
-  } else if (error.code) {
-    response.status(error.code).send(error);
-  } else {
-    next(error);
+    if (error instanceof HTTPError) {
+      response
+        .status(error.code)
+        .json({ message: error.message, details: error.details });
+    } else {
+      response
+        .status(500)
+        .json({ message: 'Server Error', details: error.message });
+    }
   }
 }
 
-export function SafeErrorHandler(
-  error: Record<string, any>,
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
-  response.status(500).send(error);
-}
+Container.provide([
+  { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
+]);

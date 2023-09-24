@@ -1,5 +1,6 @@
 export class HTTPError extends Error {
   code: number;
+  details?: Record<string, any>;
 
   constructor(message: string, code: number) {
     super(message);
