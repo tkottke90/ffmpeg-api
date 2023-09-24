@@ -14,6 +14,7 @@ import { FfmpegService } from '../services/ffmpeg.service';
 import { MulterFile, UploadVideo } from '../middleware/multer.middleware';
 import { BadRequestError } from '../utilities/errors.util';
 import { FileSystemService } from '../services/fileSystem.service';
+import { LoggerService } from '../services';
 
 @Controller('/')
 export class EntrypointController {
@@ -34,22 +35,36 @@ export class EntrypointController {
     @Response() res: express.Response,
     @Next() next: express.NextFunction
   ) {
+    let result = '';
+
     try {
       if (!file) {
         throw new BadRequestError('No File Provided');
       }
 
-      const result = await this.ffmpeg.extractAudio(file.path);
+      result = await this.ffmpeg.extractAudio(file.path);
 
       if (!['yes', 'true', '1', 'keep'].includes(keepOriginal)) {
+        LoggerService.log('info', 'Removing Input Video File', {
+          file: result,
+          input: file?.originalname
+        });
         await this.fileSystem.removeFile(file.path);
       }
-
-      console.log(require.main);
 
       res.sendFile(result, { root: require.main!.path });
     } catch (error) {
       next(error);
+    } finally {
+      if (result) {
+        LoggerService.log('info', 'Removing Created Audio File', {
+          file: result,
+          input: file?.originalname
+        });
+        await this.fileSystem.removeFile(result).catch((rmErr) => {
+          LoggerService.error(rmErr as unknown as Error);
+        });
+      }
     }
   }
 }
