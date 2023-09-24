@@ -16,7 +16,7 @@ import { BadRequestError } from '../utilities/errors.util';
 import { FileSystemService } from '../services/fileSystem.service';
 
 @Controller('/')
-export class ServerStatusController {
+export class EntrypointController {
   constructor(
     @Inject('FfmpegService') private readonly ffmpeg: FfmpegService,
     @Inject('FileSystemService') private readonly fileSystem: FileSystemService

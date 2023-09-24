@@ -5,8 +5,8 @@
 
 import { attachControllers } from '@decorators/express';
 import { Application } from 'express';
-import { ServerStatusController } from './server-status';
+import { EntrypointController } from './entrypoint';
 
 export default function (app: Application) {
-  attachControllers(app, [ServerStatusController]);
+  attachControllers(app, [EntrypointController]);
 }
