@@ -6,7 +6,8 @@
 import { attachControllers } from '@decorators/express';
 import { Application } from 'express';
 import { EntrypointController } from './entrypoint';
+import { ConvertController } from './convert';
 
 export default function (app: Application) {
-  attachControllers(app, [EntrypointController]);
+  attachControllers(app, [EntrypointController, ConvertController]);
 }
