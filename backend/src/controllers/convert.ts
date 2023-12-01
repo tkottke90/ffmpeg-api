@@ -2,7 +2,7 @@ import { Controller, Next, Response, Request, Post } from '@decorators/express';
 import express from 'express';
 import { Inject } from '@decorators/di';
 import { FfmpegService } from '../services/ffmpeg.service';
-import { MulterFile, UploadVideo } from '../middleware/multer.middleware';
+import { MulterFile, UploadAudio } from '../middleware/multer.middleware';
 import { BadRequestError } from '../utilities/errors.util';
 import { FileSystemService } from '../services/fileSystem.service';
 import { LoggerService } from '../services';
@@ -14,7 +14,7 @@ export class ConvertController {
     @Inject('FileSystemService') private readonly fileSystem: FileSystemService
   ) {}
 
-  @Post('/', [UploadVideo])
+  @Post('/', [UploadAudio])
   async convertAudio(
     @Request('file') file: MulterFile,
     @Response() res: express.Response,
