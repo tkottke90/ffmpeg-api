@@ -31,13 +31,13 @@ export class FfmpegService {
     return result;
   }
 
-  async convert(filePath: string, targetFormat: string) {
+  async convert(filePath: string, targetFormat?: string) {
     if (filePath.length === 0) {
       throw new BadRequestError('No File Provided');
     }
 
     const result = await new Promise<string>((res, rej) => {
-      const outputFile = this.replaceExtension(filePath);
+      const outputFile = this.replaceExtension(filePath, targetFormat);
 
       exec(`ffmpeg -i ${filePath} ${outputFile}`, (error, stdout, stderr) => {
         if (error) {
@@ -54,7 +54,7 @@ export class FfmpegService {
     return result;
   }
 
-  private replaceExtension(filename: string) {
+  private replaceExtension(filename: string, extension = 'wav') {
     const base = basename(filename);
     const path = dirname(filename);
 
@@ -65,7 +65,7 @@ export class FfmpegService {
       baseParts.pop();
     }
 
-    return `${path}/${baseParts.join('.')}.wav`;
+    return `${path}/${baseParts.join('.')}.${extension}`;
   }
 }
 
